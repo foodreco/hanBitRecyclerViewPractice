@@ -1,6 +1,7 @@
 package com.leesangmin89.hanbitrecyclerviewpractice
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,9 @@ class MainFragment : Fragment() {
 
     private val binding by lazy { FragmentMainBinding.inflate(layoutInflater) }
 
+    //2. 어뎁터 설정
+    private val adapter by lazy { ReAdapter() }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -21,8 +25,6 @@ class MainFragment : Fragment() {
         //1. 리싸이클러에 들어갈 데이터
         val data = loadData()
 
-        //2. 어뎁터 설정
-        val adapter = ReAdapter()
 
         //3. 리싸이클러뷰와 연결
         binding.recyclerViewPractice.adapter = adapter
@@ -32,6 +34,11 @@ class MainFragment : Fragment() {
 
         binding.buttonOn.setOnClickListener {
             it.findNavController().navigate(MainFragmentDirections.actionMainFragmentToBFragment())
+        }
+
+        binding.buttonOff.setOnClickListener {
+            val list = adapter.getTestList()
+            Log.i("확인","list : $list")
         }
         return binding.root
     }
@@ -45,5 +52,19 @@ class MainFragment : Fragment() {
             sampleList.add(data)
         }
         return sampleList
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        val list = adapter.getTestList()
+        Log.i("확인","list : $list")
+        adapter.clearTestList()
+        Log.i("확인","list clearTestList : $list")
+        Log.i("확인","MainFragment onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("확인","MainFragment onDestroy")
     }
 }
